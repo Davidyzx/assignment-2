@@ -3,7 +3,7 @@
 A Python script that parses an Excel spreadsheet with multiple tabs containing different types of map data and creates an interactive Folium map.
 
 ## Example Output
-- [Map w/ Lines](map_with_lines.html)
+- [Map w/ Lines](https://davidyzx.github.io/assignment-2/map_with_lines.html)
 
 ## Features
 
@@ -14,6 +14,7 @@ A Python script that parses an Excel spreadsheet with multiple tabs containing d
 - **Heatmap**: Intensity-based visualization
 - **Marker Clustering**: Automatically groups nearby markers
 - **Multiple Map Layers**: Switch between different map styles
+- **Line Length**: Click a line to see its total length in km, calculated with the haversine formula
 
 ## Installation
 

@@ -18,6 +18,7 @@ import folium
 from folium.plugins import HeatMap, MarkerCluster
 import json
 import xyzservices.providers as xyz
+import math
 
 
 def parse_coordinate_string(coord_str):
@@ -76,6 +77,17 @@ def add_markers(map_obj, df_markers, use_cluster=True):
         marker_cluster.add_to(map_obj)
 
 
+def line_length_km(coords):#Calculate the total length (in kilometers) of a line using the Haversine formula, which I found online.
+    total = 0
+    for (lat1, lon1), (lat2, lon2) in zip(coords, coords[1:]):
+        r = 6371  # Earth radius, km
+        p1, p2 = math.radians(lat1), math.radians(lat2)
+        dp = math.radians(lat2 - lat1)
+        dl = math.radians(lon2 - lon1)
+        a = math.sin(dp / 2) ** 2 + math.cos(p1) * math.cos(p2) * math.sin(dl / 2) ** 2
+        total += 2 * r * math.asin(math.sqrt(a))
+    return total
+
 def add_lines(map_obj, df_lines):
     if df_lines is None or df_lines.empty:
         return
@@ -86,7 +98,7 @@ def add_lines(map_obj, df_lines):
         if coordinates:
             folium.PolyLine(
                 locations=coordinates,
-                popup=row.get('name', 'Line'),
+                popup=f"{row.get('name', 'Line')}<br>Length: {line_length_km(coordinates):.1f} km",
                 tooltip=row.get('name', 'Line'),
                 color=row.get('color', 'blue'),
                 weight=row.get('weight', 3),
