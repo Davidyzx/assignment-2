@@ -77,7 +77,21 @@ def add_markers(map_obj, df_markers, use_cluster=True):
 
 
 def add_lines(map_obj, df_lines):
-    pass
+    if df_lines is None or df_lines.empty:
+        return
+
+    for _, row in df_lines.iterrows():
+        # transfer
+        coordinates = parse_coordinate_string(row.get('coordinates'))
+        if coordinates:
+            folium.PolyLine(
+                locations=coordinates,
+                popup=row.get('name', 'Line'),
+                tooltip=row.get('name', 'Line'),
+                color=row.get('color', 'blue'),
+                weight=row.get('weight', 3),
+                opacity=row.get('opacity', 0.8)
+            ).add_to(map_obj)
 
 
 def add_polygons(map_obj, df_polygons):
@@ -165,6 +179,7 @@ def create_map_from_excel(excel_file, output_file='map.html',
 
     # Extract dataframes for each tab
     df_markers = excel_data.get('markers')
+    df_lines = excel_data.get('lines')
     df_polygons = excel_data.get('polygons')
     df_heatmap = excel_data.get('heatmap')
     df_circles = excel_data.get('circles')
@@ -202,6 +217,8 @@ def create_map_from_excel(excel_file, output_file='map.html',
     # Add map elements from each tab
     print("Adding markers...")
     add_markers(m, df_markers, use_cluster=True)
+    print("Adding lines...")# add lines
+    add_lines(m, df_lines)
 
     print("Adding polygons...")
     add_polygons(m, df_polygons)
